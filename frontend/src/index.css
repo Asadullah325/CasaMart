@@ -1,1 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap");
+
+* {
+  font-family: "Bree Serif", sans-serif;
+}
+
 @import "tailwindcss";
