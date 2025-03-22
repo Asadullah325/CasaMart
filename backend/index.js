@@ -6,10 +6,10 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import ConnectDb from './config/db.config.js';
+import userRoutes from './routes/user.routes.js';
 
 
 configDotenv();
-
 const app = express();
 
 app.use(express.json());
@@ -27,12 +27,7 @@ app.use(helmet({
 }));
 
 
-app.get('/', (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: 'Welcome to CasaMart',
-    });
-});
+app.use('/api/user', userRoutes)
 
 
 const PORT = process.env.PORT || 5000;
