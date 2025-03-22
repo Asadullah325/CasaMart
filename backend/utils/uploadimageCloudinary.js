@@ -12,7 +12,7 @@ const uploadImageCloudinary = async (image) => {
 
         const uploadImage = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream({
-                folder: 'users',
+                folder: 'CASAMART',
                 resource_type: 'auto'
             }, (error, result) => {
                 if (error) {
