@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import verifyEmailTemplate from "../utils/verifyEmailtemplate.js";
 import generateAccessToken from "../utils/generateAccessToken.js";
 import generateRefreshToken from "../utils/generateRefreshToken.js";
+import uploadImageCloudinary from "../utils/uploadimageCloudinary.js";
 
 export const registerUser = async (req, res) => {
     try {
@@ -173,8 +174,7 @@ export const logoutUser = async (req, res) => {
             });
         }
 
-        const user = await User.findByIdAndUpdate(userId,{
-            status: "inactive",
+        const user = await User.findByIdAndUpdate(userId, {
             refresh_token: ""
         }, { new: true });
 
@@ -191,6 +191,45 @@ export const logoutUser = async (req, res) => {
             message: "User logged out successfully",
             success: true
         });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: error.message || "Something went wrong",
+            success: false
+        })
+    }
+}
+
+export const uploadUserImage = async (req, res) => {
+    try {
+
+        const userId = req.userId;
+
+        const image = req.file;
+
+        if (!image) {
+            return res.status(400).json({
+                message: "Image is required",
+                success: false
+            });
+        }
+
+        const upload = await uploadImageCloudinary(image);
+
+        const user = await User.findByIdAndUpdate(userId, {
+            avatar: upload.secure_url
+        }, { new: true });
+
+        res.status(200).json({
+            message: "Image uploaded successfully",
+            success: true,
+            data:{
+                avatar: upload.secure_url,
+                public_id: upload.public_id,
+                userId : user._id
+            }
+        });
+
     } catch (error) {
         console.log(error.message);
         res.status(500).json({
