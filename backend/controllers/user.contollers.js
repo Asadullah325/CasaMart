@@ -1,6 +1,7 @@
 import sendEmail from "../config/sendEmail.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import verifyEmailTemplate from "../utils/verifyEmailtemplate.js";
 import generateAccessToken from "../utils/generateAccessToken.js";
 import generateRefreshToken from "../utils/generateRefreshToken.js";
@@ -414,6 +415,51 @@ export const resetPassword = async (req, res) => {
             message: "Password reset successfully",
             success: true
         });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: error.message || "Something went wrong",
+            success: false
+        })
+    }
+}
+
+export const refreshToken = async (req, res) => {
+    try {
+        const { refreshToken } = req.cookies || req?.headers?.authorization?.split("Bearer ")[1];
+
+        if (!refreshToken) {
+            return res.status(401).json({
+                message: "Unauthorized",
+                success: false
+            });
+        }
+
+        const verifyToken = await jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH);
+
+        if (!verifyToken) {
+            return res.status(401).json({
+                message: "Unauthorized",
+                success: false
+            });
+        }
+
+        const newAccessToken = await generateAccessToken(verifyToken.userId);
+
+        res.cookie("accessToken", newAccessToken, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+            sameSite: "none",
+            secure: true
+        });
+
+        res.status(200).json({
+            message: "Token refreshed successfully",
+            success: true,
+            accessToken: newAccessToken
+        });
+
 
     } catch (error) {
         console.log(error.message);
