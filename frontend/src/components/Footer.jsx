@@ -5,11 +5,11 @@ import { FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="border-t p-4 px-10 border-gray-300 flex flex-col md:flex-row  justify-between items-center gap-2 container mx-auto">
+    <footer className="sticky bottom-0 w-full border-t p-4 px-10 border-gray-300 flex flex-col md:flex-row  justify-between items-center gap-2 bg-white">
       <div className="flex items-center m-0">
-        <p className="text-xl">&copy; 2023 CasaMart. All rights reserved.</p>
+        <p className="text-sm">&copy; 2023 CasaMart. All rights reserved.</p>
       </div>
-      <div className="flex gap-4 text-2xl">
+      <div className="flex gap-4 text-xl">
         <a
           href="http://www.facebook.com"
           target="_blank"

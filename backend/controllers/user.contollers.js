@@ -136,6 +136,10 @@ export const loginUser = async (req, res) => {
         const accessToken = await generateAccessToken(user._id);
         const refreshToken = await generateRefreshToken(user._id);
 
+        const updateUser = await User.findByIdAndUpdate(user._id, {
+            last_login: Date.now()
+        }, { new: true });
+
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: true,
@@ -151,7 +155,7 @@ export const loginUser = async (req, res) => {
         res.status(200).json({
             message: "User logged in successfully",
             success: true,
-            user,
+            updateUser,
             accessToken,
             refreshToken
         })
@@ -460,6 +464,34 @@ export const refreshToken = async (req, res) => {
             accessToken: newAccessToken
         });
 
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: error.message || "Something went wrong",
+            success: false
+        })
+    }
+}
+
+export const getUserDetails = async (req, res) => {
+    try {
+        const userId = req.userId;
+
+        const user = await User.findOne({ _id: userId }).select("-password -refresh_token");
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: "User details fetched successfully",
+            success: true,
+            user
+        })
 
     } catch (error) {
         console.log(error.message);
