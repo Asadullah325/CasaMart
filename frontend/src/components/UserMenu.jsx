@@ -8,6 +8,7 @@ import axiosInstance from "../utils/Axios";
 import { logout } from "../store/userSlice";
 import AxiosToastError from "../utils/AxiosToastError";
 import { HiOutlineExternalLink } from "react-icons/hi";
+import isAdmin from "../utils/IsAdmin";
 
 const UserMenu = ({ close }) => {
   const user = useSelector((state) => state.user);
@@ -49,8 +50,9 @@ const UserMenu = ({ close }) => {
     <>
       <div className="flex flex-col gap-2">
         <p className="font-semibold">My Account</p>
-        <p className="text-sm text-gray-500 ">{user?.name}</p>
-        <p className="text-sm text-red-500 ">{user?.role}</p>
+        <p className="text-sm text-gray-500 ">
+          {user?.name} <span className="text-xs text-red-500">{user?.role === "ADMIN" ? "(Admin)" : ""}</span>
+        </p>
         <div className="text-sm text-gray-500 flex items-center gap-2">
           {user?.email}
           <Link
@@ -64,34 +66,40 @@ const UserMenu = ({ close }) => {
 
         <Divider />
         <div className="flex flex-col gap-3 max-h-[50vh]">
-          <Link
-            onClick={handleClose}
-            to="/dashboard/catagories"
-            className="hover:text-blue-500"
-          >
-            Catagories
-          </Link>
-          <Link
-            onClick={handleClose}
-            to="/dashboard/subCatagories"
-            className="hover:text-blue-500"
-          >
-            Sub Catagories
-          </Link>
-          <Link
-            onClick={handleClose}
-            to="/dashboard/products"
-            className="hover:text-blue-500"
-          >
-            Products
-          </Link>
-          <Link
-            onClick={handleClose}
-            to="/dashboard/upload-product"
-            className="hover:text-blue-500"
-          >
-            Upload Product
-          </Link>
+          {isAdmin(user?.role) && (
+            <>
+              <Link
+                onClick={handleClose}
+                to="/dashboard/catagories"
+                className="hover:text-blue-500"
+              >
+                Catagories
+              </Link>
+
+              <Link
+                onClick={handleClose}
+                to="/dashboard/subCatagories"
+                className="hover:text-blue-500"
+              >
+                Sub Catagories
+              </Link>
+              <Link
+                onClick={handleClose}
+                to="/dashboard/products"
+                className="hover:text-blue-500"
+              >
+                Products
+              </Link>
+              <Link
+                onClick={handleClose}
+                to="/dashboard/upload-product"
+                className="hover:text-blue-500"
+              >
+                Upload Product
+              </Link>
+            </>
+          )}
+
           <Link
             onClick={handleClose}
             to="/dashboard/myorders"
