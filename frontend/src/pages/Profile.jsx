@@ -133,7 +133,7 @@ const Profile = () => {
             />
           </div>
           <div className="flex items-center justify-end">
-            <button className="p-1 px-2 w-100 text-white text-lg cursor-pointer hover:bg-emerald-600 rounded bg-emerald-500 ">
+            <button className="p-1 px-2 w-50 text-white text-lg cursor-pointer hover:bg-emerald-600 rounded bg-emerald-500 ">
               {isLoading ? "Saving..." : "Save Changes"}
             </button>
           </div>

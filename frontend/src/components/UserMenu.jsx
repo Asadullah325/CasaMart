@@ -50,6 +50,7 @@ const UserMenu = ({ close }) => {
       <div className="flex flex-col gap-2">
         <p className="font-semibold">My Account</p>
         <p className="text-sm text-gray-500 ">{user?.name}</p>
+        <p className="text-sm text-red-500 ">{user?.role}</p>
         <div className="text-sm text-gray-500 flex items-center gap-2">
           {user?.email}
           <Link
@@ -62,7 +63,35 @@ const UserMenu = ({ close }) => {
         </div>
 
         <Divider />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3 max-h-[50vh]">
+          <Link
+            onClick={handleClose}
+            to="/dashboard/catagories"
+            className="hover:text-blue-500"
+          >
+            Catagories
+          </Link>
+          <Link
+            onClick={handleClose}
+            to="/dashboard/subCatagories"
+            className="hover:text-blue-500"
+          >
+            Sub Catagories
+          </Link>
+          <Link
+            onClick={handleClose}
+            to="/dashboard/products"
+            className="hover:text-blue-500"
+          >
+            Products
+          </Link>
+          <Link
+            onClick={handleClose}
+            to="/dashboard/upload-product"
+            className="hover:text-blue-500"
+          >
+            Upload Product
+          </Link>
           <Link
             onClick={handleClose}
             to="/dashboard/myorders"

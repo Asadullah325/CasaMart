@@ -11,6 +11,7 @@ import UserMenu from "./UserMenu";
 const Header = () => {
   const isMobile = useMobile();
   const location = useLocation();
+
   const navigate = useNavigate();
   const searchPage = location.pathname === "/search";
 
@@ -34,14 +35,9 @@ const Header = () => {
   return (
     <>
       {!(isMobile && searchPage) && (
-        <header className="py-2 md:shadow-md sticky top-0 flex items-center justify-between px-5 bg-white">
+        <header className="py-2 md:shadow-md sticky top-0 z-100 flex items-center justify-between px-5 bg-white">
           <div className="flex items-center justify-between w-full">
             <Link to="/" className="flex items-center gap-2">
-              <img
-                src="android-chrome-192x192.png"
-                alt=""
-                className="w-8 h-8 md:w-12 md:h-12 rounded-full"
-              />
               <h1 className="text-xl md:text-3xl font-bold text-blue-600">
                 CasaMart
               </h1>
@@ -83,7 +79,7 @@ const Header = () => {
 
               <Link
                 to="/cart"
-                className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 p-3 rounded-xl text-white"
+                className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 p-3 py-2 rounded-xl text-white"
               >
                 <IoCartOutline className="text-2xl cursor-pointer animate-pulse font-bold" />
                 <div className="flex flex-col items-center">
