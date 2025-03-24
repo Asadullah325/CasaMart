@@ -26,9 +26,9 @@ const Search = () => {
     >
       <div className="m-0 flex items-center justify-center">
         {isMobile && searchPage ? (
-          <Link to="/" aria-label="Back">
+          <button onClick={() => navigate(-1)} aria-label="Back">
             <FaRegArrowAltCircleLeft className="text-xl cursor-pointer hover:text-blue-500" />
-          </Link>
+          </button>
         ) : (
           <button type="button" aria-label="Search">
             <FaSearch className="text-xl cursor-pointer hover:text-blue-500" />
@@ -39,10 +39,14 @@ const Search = () => {
       {!searchPage ? (
         <TypeAnimation
           sequence={[
-            "Search for Pizza", 1000,
-            "Search for Burger", 1000,
-            "Search for Fries", 1000,
-            "Search for Pasta", 1000,
+            "Search for Pizza",
+            1000,
+            "Search for Burger",
+            1000,
+            "Search for Fries",
+            1000,
+            "Search for Pasta",
+            1000,
           ]}
           speed={50}
           style={{ fontSize: "1em" }}

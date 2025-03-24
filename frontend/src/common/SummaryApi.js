@@ -1,3 +1,4 @@
+
 export const BASE_URL = "http://localhost:3000"
 
 const SummaryApi = {
@@ -40,6 +41,18 @@ const SummaryApi = {
     updateUserDetails: {
         url: `${BASE_URL}/api/user/update-user`,
         method: "PUT"
+    },
+    addCatagory: {
+        url: `${BASE_URL}/api/catagory/addCatagory`,
+        method: "POST"
+    },
+    uploadImage:{
+        url: `${BASE_URL}/api/file/upload`,
+        method: "POST"
+    },
+    allCatagory: {
+        url: `${BASE_URL}/api/catagory/allCatagory`,
+        method: "GET"
     }
 }
 

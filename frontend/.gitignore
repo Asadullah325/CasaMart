@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-Binkeyit Full Stack Ecommerce
+Upload Data
 node_modules
 dist
 dist-ssr

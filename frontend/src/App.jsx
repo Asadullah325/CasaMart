@@ -22,7 +22,7 @@ const App = () => {
   return (
     <>
       <Header />
-      <div className="container mx-auto min-h-[78vh]">
+      <div className="mx-2 min-h-[78vh]">
         <Outlet />
       </div>
       <Footer />
