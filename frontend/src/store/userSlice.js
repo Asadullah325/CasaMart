@@ -41,6 +41,9 @@ const userSlice = createSlice({
             state.createdAt = action.payload.createdAt;
             state.updatedAt = action.payload.updatedAt;
         },
+        uploadProfile: (state, action) => {
+            state.avatar = action.payload
+        },
         logout: (state) => {
             state._id = "";
             state.name = "";
@@ -62,6 +65,6 @@ const userSlice = createSlice({
     }
 })
 
-export const { setUserDetails, logout } = userSlice.actions;
+export const { setUserDetails, logout, uploadProfile } = userSlice.actions;
 
 export default userSlice.reducer;

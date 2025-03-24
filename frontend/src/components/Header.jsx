@@ -27,8 +27,8 @@ const Header = () => {
   };
 
   const handleMobileLogin = () => {
-    if (!user?._id) redirectToLoginPage();
-    navigate("/user-menu");
+    if (!user._id) redirectToLoginPage();
+    else navigate("/user-menu");
   };
 
   return (

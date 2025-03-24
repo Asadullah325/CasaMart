@@ -29,9 +29,17 @@ const SummaryApi = {
         url: `${BASE_URL}/api/user/getUserDetails`,
         method: "GET",
     },
-    logout : {
+    logout: {
         url: `${BASE_URL}/api/user/logout`,
         method: "GET",
+    },
+    uploadProfile: {
+        url: `${BASE_URL}/api/user/upload-image`,
+        method: "PUT"
+    },
+    updateUserDetails: {
+        url: `${BASE_URL}/api/user/update-user`,
+        method: "PUT"
     }
 }
 

@@ -7,6 +7,7 @@ import SummaryApi from "../common/SummaryApi";
 import axiosInstance from "../utils/Axios";
 import { logout } from "../store/userSlice";
 import AxiosToastError from "../utils/AxiosToastError";
+import { HiOutlineExternalLink } from "react-icons/hi";
 
 const UserMenu = ({ close }) => {
   const user = useSelector((state) => state.user);
@@ -38,18 +39,42 @@ const UserMenu = ({ close }) => {
     }
   };
 
+  const handleClose = () => {
+    if (close) {
+      close();
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col gap-2">
         <p className="font-semibold">My Account</p>
-        <p className="text-xs text-gray-500">{user?.name}</p>
-        <p className="text-xs text-gray-500">{user?.email}</p>
+        <p className="text-sm text-gray-500 ">{user?.name}</p>
+        <div className="text-sm text-gray-500 flex items-center gap-2">
+          {user?.email}
+          <Link
+            onClick={handleClose}
+            to="/dashboard/profile"
+            className="hover:text-blue-500"
+          >
+            <HiOutlineExternalLink className="inline text-xl" />
+          </Link>
+        </div>
+
         <Divider />
         <div className="flex flex-col gap-2">
-          <Link to="" className="hover:text-blue-500">
+          <Link
+            onClick={handleClose}
+            to="/dashboard/myorders"
+            className="hover:text-blue-500"
+          >
             My Orders
           </Link>
-          <Link to="" className="hover:text-blue-500">
+          <Link
+            onClick={handleClose}
+            to="/dashboard/address"
+            className="hover:text-blue-500"
+          >
             Address
           </Link>
           <button
