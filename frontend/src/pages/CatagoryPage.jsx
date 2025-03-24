@@ -5,12 +5,26 @@ import axiosInstance from "../utils/Axios";
 import SummaryApi from "../common/SummaryApi";
 import Sekeleton from "../components/Sekeleton";
 import NoData from "../components/NoData";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import EdirCatagoryModel from "../components/EdirCatagoryModel";
+import ConfirmationModel from "../components/ConfirmationModel";
+import { toast } from "react-toastify";
 
 const CatagoryPage = () => {
   const [openModel, setOpenModel] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [catagories, setCatagories] = useState([]);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteCat, setDeleteCat] = useState({
+    catagoryId: "",
+  });
+  const [catagory, setCatagory] = useState({
+    name: "",
+    image: "",
+  });
 
   const fetchCatagories = async () => {
     try {
@@ -18,8 +32,6 @@ const CatagoryPage = () => {
       const res = await axiosInstance({
         ...SummaryApi.allCatagory,
       });
-
-      console.log(res.data);
 
       if (res?.data?.success) {
         setCatagories(res?.data?.catagory);
@@ -34,6 +46,23 @@ const CatagoryPage = () => {
   useEffect(() => {
     fetchCatagories();
   }, []);
+
+  const handleDelete = async () => {
+    try {
+      const res = await axiosInstance({
+        ...SummaryApi.deleteCatagory,
+        data: deleteCat,
+      });
+
+      if (res?.data?.success) {
+        toast.success(res?.data?.message);
+        setOpenDelete(false);
+        fetchCatagories();
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
 
   return (
     <>
@@ -54,7 +83,29 @@ const CatagoryPage = () => {
             <Sekeleton />
           </div>
         )}
-        {openModel && <UploadCatagoryModel fetch={fetchCatagories} close={() => setOpenModel(false)} />}
+        {openModel && (
+          <UploadCatagoryModel
+            fetch={fetchCatagories}
+            close={() => setOpenModel(false)}
+          />
+        )}
+
+        {openEdit && (
+          <EdirCatagoryModel
+            fetch={fetchCatagories}
+            close={() => setOpenEdit(false)}
+            data={catagory}
+          />
+        )}
+
+        {openDelete && (
+          <ConfirmationModel
+            close={() => setOpenDelete(false)}
+            fetch={fetchCatagories}
+            cancel={() => setOpenDelete(false)}
+            confirm={handleDelete}
+          />
+        )}
 
         {catagories && catagories.length === 0 && !isLoading ? (
           <NoData />
@@ -62,8 +113,36 @@ const CatagoryPage = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 p-4">
             {catagories &&
               catagories?.map((catagory) => (
-                <div key={catagory._id} className="p-2 shadow-md flex items-center justify-between">
-                  <img src={catagory.image} alt={catagory.name} className="w-50 h-50 border-b-2 border-red-500 object-contain" />
+                <div
+                  key={catagory._id}
+                  className="p-2 relative shadow-md rounded-md flex flex-col items-center justify-between"
+                >
+                  <img
+                    src={catagory.image}
+                    alt={catagory.name}
+                    className="w-50 h-50 border-b-2 border-red-500 object-contain"
+                  />
+                  <h1 className="font-bold my-2">{catagory.name}</h1>
+                  <div className="flex gap-2 absolute top-0 right-0">
+                    <button
+                      onClick={() => {
+                        setOpenEdit(true);
+                        setCatagory(catagory);
+                      }}
+                      className="cursor-pointer text-emerald-500 hover:text-emerald-600"
+                    >
+                      <FaEdit size={20} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setOpenDelete(true);
+                        setDeleteCat({ catagoryId: catagory._id }); // Fix
+                      }}
+                      className="cursor-pointer text-red-500 hover:text-red-600"
+                    >
+                      <MdDelete size={20} />
+                    </button>
+                  </div>
                 </div>
               ))}
           </div>

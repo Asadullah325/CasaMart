@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { IoMdClose } from "react-icons/io";
 import { FaRegImage } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
+import AxiosToastError from "../utils/AxiosToastError";
 import { toast } from "react-toastify";
 import imageUpload from "../utils/UploadImage";
-import AxiosToastError from "../utils/AxiosToastError";
 import axiosInstance from "../utils/Axios";
 import SummaryApi from "../common/SummaryApi";
 
-const UploadCatagoryModel = ({ close, fetch }) => {
+const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
   const [data, setData] = useState({
-    name: "",
-    image: "",
+    catagoryId: catagory._id,
+    name: catagory.name,
+    image: catagory.image,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +35,10 @@ const UploadCatagoryModel = ({ close, fetch }) => {
       toast.error("Please Select File First");
       return;
     }
+    setIsLoading(true);
+
     const image = await imageUpload(file);
+    setIsLoading(false);
 
     setData((prev) => {
       return {
@@ -55,8 +59,9 @@ const UploadCatagoryModel = ({ close, fetch }) => {
 
     try {
       setIsLoading(true);
+
       const res = await axiosInstance({
-        ...SummaryApi.addCatagory,
+        ...SummaryApi.updateCatagory,
         data,
       });
 
@@ -88,7 +93,7 @@ const UploadCatagoryModel = ({ close, fetch }) => {
               <IoMdClose />
             </button>
           </div>
-          <h1 className="text-xl font-bold">Upload Catagory</h1>
+          <h1 className="text-xl font-bold">Edit Catagory</h1>
           <form onSubmit={handleSubmit}>
             <div className="my-2 flex flex-col">
               <label htmlFor="name">Name</label>
@@ -122,15 +127,15 @@ const UploadCatagoryModel = ({ close, fetch }) => {
                 <label
                   htmlFor="image"
                   className={`
-                    ${
-                      !data.name
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : " bg-blue-500 hover:bg-blue-600 cursor-pointer"
-                    }
-                     text-white px-4 py-2 rounded
-                    `}
+                              ${
+                                !data.name
+                                  ? "bg-gray-400 cursor-not-allowed"
+                                  : " bg-blue-500 hover:bg-blue-600 cursor-pointer"
+                              }
+                               text-white px-4 py-2 rounded
+                              `}
                 >
-                  Upload Image
+                  {isLoading ? "Uploading..." : "Upload Image"}
                 </label>
                 <input
                   type="file"
@@ -152,7 +157,7 @@ const UploadCatagoryModel = ({ close, fetch }) => {
                     : "bg-gray-400 cursor-not-allowed"
                 } text-white px-4 py-2 rounded`}
               >
-                {isLoading ? "Uploading..." : "Submit"}
+                {isLoading ? "Updating..." : "Update"}
               </button>
             </div>
           </form>
@@ -162,4 +167,4 @@ const UploadCatagoryModel = ({ close, fetch }) => {
   );
 };
 
-export default UploadCatagoryModel;
+export default EdirCatagoryModel;
