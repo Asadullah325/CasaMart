@@ -91,7 +91,7 @@ const UploadCatagoryModel = ({ close, fetch }) => {
           <h1 className="text-xl font-bold">Upload Catagory</h1>
           <form onSubmit={handleSubmit}>
             <div className="my-2 flex flex-col">
-              <label htmlFor="name">Name</label>
+              <label htmlFor="name">Catagory Name</label>
               <input
                 type="text"
                 value={data.name}

@@ -10,6 +10,7 @@ import { MdDelete } from "react-icons/md";
 import EdirCatagoryModel from "../components/EdirCatagoryModel";
 import ConfirmationModel from "../components/ConfirmationModel";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const CatagoryPage = () => {
   const [openModel, setOpenModel] = useState(false);
@@ -26,29 +27,11 @@ const CatagoryPage = () => {
     image: "",
   });
 
-  const fetchCatagories = async () => {
-    try {
-      setIsLoading(true);
-      const res = await axiosInstance({
-        ...SummaryApi.allCatagory,
-      });
-
-      if (res?.data?.success) {
-        setCatagories(res?.data?.catagory);
-      }
-    } catch (error) {
-      AxiosToastError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCatagories();
-  }, []);
+  const allcatagories = useSelector((state) => state.product.allCatagories);
 
   const handleDelete = async () => {
     try {
+      setIsLoading(true);
       const res = await axiosInstance({
         ...SummaryApi.deleteCatagory,
         data: deleteCat,
@@ -57,12 +40,16 @@ const CatagoryPage = () => {
       if (res?.data?.success) {
         toast.success(res?.data?.message);
         setOpenDelete(false);
-        fetchCatagories();
+        setIsLoading(false);
       }
     } catch (error) {
       AxiosToastError(error);
     }
   };
+
+  useEffect(() => {
+    setCatagories(allcatagories);
+  }, [allcatagories]);
 
   return (
     <>
@@ -83,25 +70,15 @@ const CatagoryPage = () => {
             <Sekeleton />
           </div>
         )}
-        {openModel && (
-          <UploadCatagoryModel
-            fetch={fetchCatagories}
-            close={() => setOpenModel(false)}
-          />
-        )}
+        {openModel && <UploadCatagoryModel close={() => setOpenModel(false)} />}
 
         {openEdit && (
-          <EdirCatagoryModel
-            fetch={fetchCatagories}
-            close={() => setOpenEdit(false)}
-            data={catagory}
-          />
+          <EdirCatagoryModel close={() => setOpenEdit(false)} data={catagory} />
         )}
 
         {openDelete && (
           <ConfirmationModel
             close={() => setOpenDelete(false)}
-            fetch={fetchCatagories}
             cancel={() => setOpenDelete(false)}
             confirm={handleDelete}
           />

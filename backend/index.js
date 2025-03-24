@@ -9,6 +9,7 @@ import ConnectDb from './config/db.config.js';
 import userRoutes from './routes/user.routes.js';
 import catagoryRoutes from './routes/catagory.routes.js';
 import imageRoutes from './routes/imageUpload.routes.js';
+import subCatagoryRoutes from './routes/subCatagory.routes.js';
 
 
 configDotenv();
@@ -32,6 +33,7 @@ app.use(helmet({
 app.use('/api/user', userRoutes)
 app.use('/api/catagory', catagoryRoutes)
 app.use('/api/file', imageRoutes)
+app.use('/api/subCatagory', subCatagoryRoutes)
 
 
 const PORT = process.env.PORT || 5000;

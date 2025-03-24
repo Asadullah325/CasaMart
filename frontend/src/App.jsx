@@ -6,6 +6,10 @@ import { ToastContainer } from "react-toastify";
 import fetchYserDetails from "./utils/FetchUserDetails";
 import { setUserDetails } from "./store/userSlice";
 import { useDispatch } from "react-redux";
+import axiosInstance from "./utils/Axios";
+import SummaryApi from "./common/SummaryApi";
+import AxiosToastError from "./utils/AxiosToastError";
+import { setAllCatagories } from "./store/productSlice";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -15,7 +19,22 @@ const App = () => {
     dispatch(setUserDetails(userData));
   };
 
+  const fetchCatagories = async () => {
+    try {
+      const res = await axiosInstance({
+        ...SummaryApi.allCatagory,
+      });
+
+      if (res?.data?.success) {
+        dispatch(setAllCatagories(res?.data?.catagory));
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
+
   useEffect(() => {
+    fetchCatagories();
     fetchUser();
   }, []);
 
@@ -26,7 +45,11 @@ const App = () => {
         <Outlet />
       </div>
       <Footer />
-      <ToastContainer theme="colored" autoClose={2000} position="bottom-right" />
+      <ToastContainer
+        theme="colored"
+        autoClose={2000}
+        position="bottom-right"
+      />
     </>
   );
 };

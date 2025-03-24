@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import { FaRegImage } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import AxiosToastError from "../utils/AxiosToastError";
 import { toast } from "react-toastify";
 import imageUpload from "../utils/UploadImage";
+import { useSelector } from "react-redux";
+import AxiosToastError from "../utils/AxiosToastError";
 import axiosInstance from "../utils/Axios";
 import SummaryApi from "../common/SummaryApi";
 
-const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
+const UploadSubCatagoryModel = ({ close }) => {
   const [data, setData] = useState({
-    catagoryId: catagory._id,
-    name: catagory.name,
-    image: catagory.image,
+    name: "",
+    image: "",
+    catagory: [],
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-
   const validateValues = Object.values(data).every((value) => value);
+
+  const allCatagories = useSelector((state) => state.product.allCatagories);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +29,22 @@ const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
     });
   };
 
+  const handleSelectChange = (e) => {
+    const value = e.target.value;
+    const categoryDetails = allCatagories.find((cat) => cat._id === value);
+
+    // Check if category is already selected
+    if (data.catagory.some((cat) => cat._id === value)) {
+      toast.warn("Category already selected!");
+      return;
+    }
+
+    setData((prev) => ({
+      ...prev,
+      catagory: [...prev.catagory, categoryDetails], // Add only if not duplicate
+    }));
+  };
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
 
@@ -35,10 +52,7 @@ const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
       toast.error("Please Select File First");
       return;
     }
-    setIsLoading(true);
-
     const image = await imageUpload(file);
-    setIsLoading(false);
 
     setData((prev) => {
       return {
@@ -58,10 +72,8 @@ const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
     }
 
     try {
-      setIsLoading(true);
-
       const res = await axiosInstance({
-        ...SummaryApi.updateCatagory,
+        ...SummaryApi.addSubCatagory,
         data,
       });
 
@@ -70,21 +82,21 @@ const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
         setData({
           name: "",
           image: "",
+          catagory: [],
         });
         close();
-        fetch();
       }
     } catch (error) {
       AxiosToastError(error);
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  
 
   return (
     <>
       <div className="fixed top-0 bottom-0 right-0 left-0 z-100 bg-black/50 p-2 flex justify-center items-center">
-        <div className="bg-white min-w-sm sm:min-w-xl md:min-w-2xl lg:min-w-4xl p-2 px-4 rounded flex flex-col relative">
+        <div className="bg-white max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-4xl min-w-sm sm:min-w-xl md:min-w-2xl lg:min-w-4xl p-2 px-4 rounded flex flex-col relative">
           <div className="absolute top-2 right-2">
             <button
               onClick={close}
@@ -93,17 +105,18 @@ const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
               <IoMdClose />
             </button>
           </div>
-          <h1 className="text-xl font-bold">Edit Catagory</h1>
+          <h1 className="text-xl font-bold">Upload Sub Catagory</h1>
+
           <form onSubmit={handleSubmit}>
             <div className="my-2 flex flex-col">
-              <label htmlFor="name">Catagory Name</label>
+              <label htmlFor="name">Sub Catagory Name</label>
               <input
                 type="text"
-                value={data.name}
                 name="name"
-                id="name"
-                placeholder="Catagory Name"
+                value={data.name}
                 onChange={handleChange}
+                id="name"
+                placeholder="Sub Catagory Name"
                 className="w-full p-2 border border-gray-300 rounded mt-2"
               />
             </div>
@@ -127,15 +140,15 @@ const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
                 <label
                   htmlFor="image"
                   className={`
-                              ${
-                                !data.name
-                                  ? "bg-gray-400 cursor-not-allowed"
-                                  : " bg-blue-500 hover:bg-blue-600 cursor-pointer"
-                              }
-                               text-white px-4 py-2 rounded
-                              `}
+                    ${
+                      !data.name
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : " bg-blue-500 hover:bg-blue-600 cursor-pointer"
+                    }
+                     text-white px-4 py-2 rounded
+                    `}
                 >
-                  {isLoading ? "Uploading..." : "Upload Image"}
+                  Upload Image
                 </label>
                 <input
                   type="file"
@@ -147,17 +160,62 @@ const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
                 />
               </div>
             </div>
+            <div className="my-2 flex flex-col">
+              <label htmlFor="catagory">Catagories</label>
+
+              <div className="flex flex-wrap gap-2">
+                {data.catagory.map((catagory) => (
+                  <p
+                    className="text-sm bg-emerald-400 p-2 rounded text-white flex items-center"
+                    key={catagory._id}
+                  >
+                    {catagory.name}
+                    <span>
+                      <IoMdClose
+                        onClick={() =>
+                          setData((prev) => ({
+                            ...prev,
+                            catagory: prev.catagory.filter(
+                              (cat) => cat._id !== catagory._id
+                            ),
+                          }))
+                        }
+                        className="ml-2 cursor-pointer hover:text-red-500"
+                      />
+                    </span>
+                  </p>
+                ))}
+              </div>
+
+              <select
+                onChange={handleSelectChange}
+                name="catagory"
+                id="catagory"
+                className="w-full p-2 border border-gray-300 rounded mt-2"
+              >
+                <option value="" disabled>
+                  Select Catagory
+                </option>
+
+                {allCatagories?.map((catagory) => (
+                  <option key={catagory._id} value={catagory._id}>
+                    {catagory.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="flex justify-end">
               <button
-                disabled={!data.name || !data.image}
+                disabled={!data.name || !data.image || !data.catagory}
                 type="submit"
                 className={`${
-                  data.name && data.image
+                  data.name && data.image && data.catagory
                     ? "bg-blue-500 hover:bg-blue-600 cursor-pointer"
                     : "bg-gray-400 cursor-not-allowed"
                 } text-white px-4 py-2 rounded`}
               >
-                {isLoading ? "Updating..." : "Update"}
+                Submit{" "}
               </button>
             </div>
           </form>
@@ -167,4 +225,4 @@ const EdirCatagoryModel = ({ close, fetch, data: catagory }) => {
   );
 };
 
-export default EdirCatagoryModel;
+export default UploadSubCatagoryModel;
